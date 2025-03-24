@@ -13,7 +13,7 @@ namespace ADO.NET
         static void Main(string[] args)
         {
             ////1) Берем строку подключения;
-            const string CONNECTION_STRING = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Movies;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            // const string CONNECTION_STRING = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Movies;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             //Console.WriteLine(CONNECTION_STRING);
             ////2) Сщздаем подключение к серверу
             //SqlConnection connection = new SqlConnection(CONNECTION_STRING);
@@ -45,8 +45,9 @@ namespace ADO.NET
             //}
             //reader.Close();
             //connection.Close();
-            Connector connector = new Connector(CONNECTION_STRING);
-            connector.DisplayMoviesWithDirectors();
+
+            Connector.DisplayMoviesWithDirectors();
+           //Connector.InsertMovie("The Gentlemen", new DateTime(2019,12,03), "Guy", "Richie");
         }
         
     }
