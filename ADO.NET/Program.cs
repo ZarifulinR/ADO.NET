@@ -49,9 +49,11 @@ namespace ADO.NET
 #endif
             // Connector.Select("*","Directors");
             //Connector.Select("title,release_date, FORMATMESSAGE(N'%s %s', first_name,last_name)","Movies,Directors","director = director_id");
-            Connector.InsertDirector("George", "Martin");
+            //Connector.InsertDirector("George", "Martin");
             Connector.Directors();
             Connector.SelectMovis();
+            //Connector.InsertDirector("Brian", "De Palma");
+            Connector.InsertMovies("Terminator 5 - Genesis", "2015-06-22", "1");
         }
     }
 }
