@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace ADO.NET
 {
@@ -14,7 +15,7 @@ namespace ADO.NET
         {
 #if INTRO
             //1) Берем строку подключения;
-            const string CONNECTION_STRING = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Movies;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            //const string CONNECTION_STRING = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Movies;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             Console.WriteLine(CONNECTION_STRING);
             //2) Сщздаем подключение к серверу
             SqlConnection connection = new SqlConnection(CONNECTION_STRING);
@@ -50,10 +51,13 @@ namespace ADO.NET
             // Connector.Select("*","Directors");
             //Connector.Select("title,release_date, FORMATMESSAGE(N'%s %s', first_name,last_name)","Movies,Directors","director = director_id");
             //Connector.InsertDirector("George", "Martin");
-            Connector.Directors();
-            Connector.SelectMovis();
+           //Connector.Directors();
+            //Connector.SelectMovis();
             //Connector.InsertDirector("Brian", "De Palma");
-            Connector.InsertMovies("Terminator 5 - Genesis", "2015-06-22", "1");
+            //Connector.InsertMovies("Terminator 5 - Genesis", "2015-06-22", "1");
+             string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Movies"].ConnectionString;
+            Console.WriteLine(CONNECTION_STRING);
         }
     }
 }
+    
