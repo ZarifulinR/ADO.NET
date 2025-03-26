@@ -49,7 +49,7 @@ namespace ExternalBase
             using (SqlConnection connection = new SqlConnection(CONNECTION_STRING))
             {
                 connection.Open();
-                string cmd = id_colum == null ? $"SELECT {colum}FROM {table}" : $"SELECT {colum} FROM {table} WHERE {id_colum}= @value";
+                string cmd = id_colum == null ? $"SELECT {colum} FROM {table}" : $"SELECT {colum} FROM {table} WHERE {id_colum}= @value";
                 SqlCommand command = new SqlCommand(cmd, connection);
                 if (id_colum != null)
                 {

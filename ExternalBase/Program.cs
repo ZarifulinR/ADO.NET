@@ -11,8 +11,8 @@ namespace ExternalBase
         static void Main(string[] args)
         {
             //Connector.Select("*","Disciplines");
-            //int? Last_name= Connector.ScalarValue("Teachers", "teacher_id", "last_name", "Олег") as int?;
-            // Console.WriteLine(Last_name.HasValue ? $"{Last_name}" : "Нету");
+            int? Last_name= Connector.ScalarValue("Teachers", "teacher_id", "last_name", "Ковтун") as int?;
+             Console.WriteLine(Last_name.HasValue ? $"{Last_name}" : "Нету");
       
 
 
