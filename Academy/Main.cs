@@ -14,31 +14,54 @@ namespace Academy
 {
     public partial class Main : Form
     {
+
+        Connector connector = new Connector
+            (
+                ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString
+            );
         public Main()
         {
             InitializeComponent();
-            Connector connector = new Connector
-                (
-                    ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString
-                );
+
             dgvStudents.DataSource = connector.Select("*", "Students");
             int rowcountStudent = dgvStudents.RowCount - 1;
-            toolStripStatusLabel1.Text = rowcountStudent.ToString();
-            //////Console.WriteLine($"Колличество студентов " + rowcountStudent);
-
-            //dgvDirections.DataSource = connector.Select("*", "Directions");
-            //int rowCount  = dgvDirections.RowCount-1;
-            //toolStripStatusLabel2.Text = rowCount.ToString();
-            //Console.WriteLine(rowCount);
-            //toolStripStatusLabel2.Text = rowCount.ToString();
-            //dataGridTeachers.DataSource = connector.Select("*", "Teachers");
-            //dataGridViewGroups.DataSource = connector.Select("*", "Groups");
-
-            //dgvDirections.DataSource = connector.Select("*", "Directions");
-            //dataGridView1.DataSource = connector.Select("*", "Disciplines");
+            toolStripStatusLabel1.Text = "Count Students " + rowcountStudent.ToString();
 
         }
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+            Console.WriteLine(tabControl.SelectedIndex);
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    dgvStudents.DataSource = connector.Select("*", "Students");
+                    int rowcountStudent = dgvStudents.RowCount - 1;
+                    toolStripStatusLabel1.Text = "Count Students " + rowcountStudent.ToString();
+                    break;
+                case 1:
+                    dataGridViewGroups.DataSource = connector.Select("*", "Groups");
+                    int rowcountGroups = dataGridViewGroups.RowCount - 1;
+                    toolStripStatusLabel1.Text = "Count Groups " + rowcountGroups.ToString();
+                    break;
+                case 2:
+                    dgvDirections.DataSource = connector.Select("*", "Directions");
+                    int rowCount  = dgvDirections.RowCount-1;
+                    toolStripStatusLabel1.Text = "Count Directions " +rowCount.ToString();
+                    break;
+                case 3:
+                    dgvDiscepline.DataSource = connector.Select("*", "Disciplines");
+                    int rowDisciplines  = dgvDiscepline.RowCount-1;
+                    toolStripStatusLabel1.Text = "Count Disciplines " + rowDisciplines.ToString();
+                    break;
+                case 4:
+                    dgvTeachers.DataSource = connector.Select("*", "Teachers");
+                    int countTeachers = dgvTeachers.RowCount - 1;
+                    toolStripStatusLabel1.Text = "Count Teachers " + countTeachers.ToString();
+                    break;
 
-      
+            }
+        }
+
     }
 }

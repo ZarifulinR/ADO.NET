@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define OLD;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,10 @@ using System.Data;
 
 namespace Academy
 {
-    class Connector
+    class Connector 
     {
         readonly string CONNECTION_STRING;// = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
-        SqlConnection connection;
+        readonly SqlConnection connection;
         public Connector(string connection_string)
         {
             CONNECTION_STRING = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
@@ -37,6 +38,9 @@ namespace Academy
             if (reader.HasRows)
             {
                 table = new DataTable();
+                table.Load(reader);
+#if OLD
+                table = new DataTable();
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
                     table.Columns.Add();
@@ -49,13 +53,16 @@ namespace Academy
                         row[i] = reader[i];
                     }
                     table.Rows.Add(row);
-                }
+                } 
+#endif
             }
             //int rowCount = table.Rows.Count;
             reader.Close();
             connection.Close();
             return table;
         }
+        
+
         ~Connector()
         {
             FreeConsole();
