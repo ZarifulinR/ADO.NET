@@ -26,11 +26,19 @@ namespace Academy
             dgvStudents.DataSource = connector.Select("*", "Students");
             int rowcountStudent = dgvStudents.RowCount - 1;
             toolStripStatusLabel1.Text = "Count Students " + rowcountStudent.ToString();
-
+            List<string> directions = connector.Directions();
+            cbGroups.Items.Clear();
+            cbGroups.Items.Add("All");
+            foreach (string direction in directions)
+            {
+                cbGroups.SelectedIndex = 0;
+                cbGroups.Items.Add(direction);
+                Console.WriteLine(direction);
+            }
         }
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
+
             Console.WriteLine(tabControl.SelectedIndex);
             switch (tabControl.SelectedIndex)
             {
@@ -46,12 +54,12 @@ namespace Academy
                     break;
                 case 2:
                     dgvDirections.DataSource = connector.Select("*", "Directions");
-                    int rowCount  = dgvDirections.RowCount-1;
-                    toolStripStatusLabel1.Text = "Count Directions " +rowCount.ToString();
+                    int rowCount = dgvDirections.RowCount - 1;
+                    toolStripStatusLabel1.Text = "Count Directions " + rowCount.ToString();
                     break;
                 case 3:
                     dgvDiscepline.DataSource = connector.Select("*", "Disciplines");
-                    int rowDisciplines  = dgvDiscepline.RowCount-1;
+                    int rowDisciplines = dgvDiscepline.RowCount - 1;
                     toolStripStatusLabel1.Text = "Count Disciplines " + rowDisciplines.ToString();
                     break;
                 case 4:
@@ -63,5 +71,15 @@ namespace Academy
             }
         }
 
+        private void cbGroups_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            string selectedDiscepline = cbGroups.SelectedItem.ToString();
+            Console.WriteLine(selectedDiscepline);
+            dataGridViewGroups.DataSource = connector.Select("direction_name , group_name", "Groups ОЩШТ Directions", "[group] = group_id AND  direction = direction_id");
+        }
+
     }
 }
+
+

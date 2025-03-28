@@ -61,6 +61,32 @@ namespace Academy
             connection.Close();
             return table;
         }
+        public List<string>Directions()
+        {
+            List<string> directions = new List<string>();
+            string cmd = $"SELECT DISTINCT direction_name FROM Directions";
+            SqlCommand command = new SqlCommand(cmd, connection);
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    directions.Add(reader["direction_name"].ToString());
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error loading directions: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return directions;
+        }
         
 
         ~Connector()
