@@ -45,6 +45,7 @@ namespace Academy
             this.dgvDiscepline = new System.Windows.Forms.DataGridView();
             this.tabPageTeachers = new System.Windows.Forms.TabPage();
             this.dgvTeachers = new System.Windows.Forms.DataGridView();
+            this.cbDisciplines = new System.Windows.Forms.CheckBox();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPagesStudent.SuspendLayout();
@@ -171,6 +172,7 @@ namespace Academy
             // 
             // tabPageDirections
             // 
+            this.tabPageDirections.Controls.Add(this.cbDisciplines);
             this.tabPageDirections.Controls.Add(this.dgvDirections);
             this.tabPageDirections.Location = new System.Drawing.Point(4, 25);
             this.tabPageDirections.Name = "tabPageDirections";
@@ -238,6 +240,19 @@ namespace Academy
             this.dgvTeachers.Size = new System.Drawing.Size(789, 369);
             this.dgvTeachers.TabIndex = 0;
             // 
+            // cbDisciplines
+            // 
+            this.cbDisciplines.AutoSize = true;
+            this.cbDisciplines.Checked = true;
+            this.cbDisciplines.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbDisciplines.Location = new System.Drawing.Point(398, 0);
+            this.cbDisciplines.Name = "cbDisciplines";
+            this.cbDisciplines.Size = new System.Drawing.Size(234, 21);
+            this.cbDisciplines.TabIndex = 3;
+            this.cbDisciplines.Text = "Показать пустые направления";
+            this.cbDisciplines.UseVisualStyleBackColor = true;
+            this.cbDisciplines.CheckedChanged += new System.EventHandler(this.cbDisciplines_CheckedChanged);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -257,6 +272,7 @@ namespace Academy
             this.tabPageGroups.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewGroups)).EndInit();
             this.tabPageDirections.ResumeLayout(false);
+            this.tabPageDirections.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDirections)).EndInit();
             this.tabPageDiscipline.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvDiscepline)).EndInit();
@@ -285,6 +301,7 @@ namespace Academy
         private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ComboBox cbGroupsDirection;
+        private System.Windows.Forms.CheckBox cbDisciplines;
     }
 }
 

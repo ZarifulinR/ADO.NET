@@ -142,6 +142,21 @@ namespace Academy
         {
             return dgv.RowCount == 0 ? 0 : dgv.RowCount - 1;
         }
+
+        private void cbDisciplines_CheckedChanged(object sender, EventArgs e)
+        {
+
+            string condition = cbDisciplines.Checked ? "" : "HAVING COUNT(stud_id) > 0";
+
+            dgvDirections.DataSource = connector.Select(
+                "direction_name AS N'Направление', COUNT(DISTINCT group_id) AS N'Количество групп', COUNT(stud_id) AS N'Количество студентов'",
+                "Students RIGHT JOIN Groups ON([group]=group_id) RIGHT JOIN Directions ON(direction=direction_id)",
+                "",
+                "direction_name " + condition
+            );
+
+            toolStripStatusLabel1.Text = $"Количество направлений: {CountRecordsInDGV(dgvDirections)}";
+        }
     }
 }
 
