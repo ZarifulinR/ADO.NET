@@ -33,19 +33,19 @@ namespace Academy
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPagesStudent = new System.Windows.Forms.TabPage();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbStudentsDirection = new System.Windows.Forms.ComboBox();
+            this.cbStudentsGroup = new System.Windows.Forms.ComboBox();
             this.dgvStudents = new System.Windows.Forms.DataGridView();
             this.tabPageGroups = new System.Windows.Forms.TabPage();
             this.cbGroupsDirection = new System.Windows.Forms.ComboBox();
             this.dataGridViewGroups = new System.Windows.Forms.DataGridView();
             this.tabPageDirections = new System.Windows.Forms.TabPage();
+            this.cbDisciplines = new System.Windows.Forms.CheckBox();
             this.dgvDirections = new System.Windows.Forms.DataGridView();
             this.tabPageDiscipline = new System.Windows.Forms.TabPage();
             this.dgvDiscepline = new System.Windows.Forms.DataGridView();
             this.tabPageTeachers = new System.Windows.Forms.TabPage();
             this.dgvTeachers = new System.Windows.Forms.DataGridView();
-            this.cbDisciplines = new System.Windows.Forms.CheckBox();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPagesStudent.SuspendLayout();
@@ -96,8 +96,8 @@ namespace Academy
             // 
             // tabPagesStudent
             // 
-            this.tabPagesStudent.Controls.Add(this.comboBox3);
-            this.tabPagesStudent.Controls.Add(this.comboBox1);
+            this.tabPagesStudent.Controls.Add(this.cbStudentsDirection);
+            this.tabPagesStudent.Controls.Add(this.cbStudentsGroup);
             this.tabPagesStudent.Controls.Add(this.dgvStudents);
             this.tabPagesStudent.Location = new System.Drawing.Point(4, 25);
             this.tabPagesStudent.Name = "tabPagesStudent";
@@ -107,21 +107,22 @@ namespace Academy
             this.tabPagesStudent.Text = "Student";
             this.tabPagesStudent.UseVisualStyleBackColor = true;
             // 
-            // comboBox3
+            // cbStudentsDirection
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(174, 1);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(167, 24);
-            this.comboBox3.TabIndex = 2;
+            this.cbStudentsDirection.FormattingEnabled = true;
+            this.cbStudentsDirection.Location = new System.Drawing.Point(174, 1);
+            this.cbStudentsDirection.Name = "cbStudentsDirection";
+            this.cbStudentsDirection.Size = new System.Drawing.Size(167, 24);
+            this.cbStudentsDirection.TabIndex = 2;
+            this.cbStudentsDirection.SelectedIndexChanged += new System.EventHandler(this.cbStudentsDirection_SelectedIndexChanged);
             // 
-            // comboBox1
+            // cbStudentsGroup
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(3, 0);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(150, 24);
-            this.comboBox1.TabIndex = 1;
+            this.cbStudentsGroup.FormattingEnabled = true;
+            this.cbStudentsGroup.Location = new System.Drawing.Point(3, 0);
+            this.cbStudentsGroup.Name = "cbStudentsGroup";
+            this.cbStudentsGroup.Size = new System.Drawing.Size(150, 24);
+            this.cbStudentsGroup.TabIndex = 1;
             // 
             // dgvStudents
             // 
@@ -182,6 +183,19 @@ namespace Academy
             this.tabPageDirections.Text = "Directions";
             this.tabPageDirections.UseVisualStyleBackColor = true;
             // 
+            // cbDisciplines
+            // 
+            this.cbDisciplines.AutoSize = true;
+            this.cbDisciplines.Checked = true;
+            this.cbDisciplines.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbDisciplines.Location = new System.Drawing.Point(398, 0);
+            this.cbDisciplines.Name = "cbDisciplines";
+            this.cbDisciplines.Size = new System.Drawing.Size(234, 21);
+            this.cbDisciplines.TabIndex = 3;
+            this.cbDisciplines.Text = "Показать пустые направления";
+            this.cbDisciplines.UseVisualStyleBackColor = true;
+            this.cbDisciplines.CheckedChanged += new System.EventHandler(this.cbDisciplines_CheckedChanged);
+            // 
             // dgvDirections
             // 
             this.dgvDirections.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -240,19 +254,6 @@ namespace Academy
             this.dgvTeachers.Size = new System.Drawing.Size(789, 369);
             this.dgvTeachers.TabIndex = 0;
             // 
-            // cbDisciplines
-            // 
-            this.cbDisciplines.AutoSize = true;
-            this.cbDisciplines.Checked = true;
-            this.cbDisciplines.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDisciplines.Location = new System.Drawing.Point(398, 0);
-            this.cbDisciplines.Name = "cbDisciplines";
-            this.cbDisciplines.Size = new System.Drawing.Size(234, 21);
-            this.cbDisciplines.TabIndex = 3;
-            this.cbDisciplines.Text = "Показать пустые направления";
-            this.cbDisciplines.UseVisualStyleBackColor = true;
-            this.cbDisciplines.CheckedChanged += new System.EventHandler(this.cbDisciplines_CheckedChanged);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -298,8 +299,8 @@ namespace Academy
         private System.Windows.Forms.DataGridView dgvDiscepline;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.TabPage tabPageGroups;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbStudentsDirection;
+        private System.Windows.Forms.ComboBox cbStudentsGroup;
         private System.Windows.Forms.ComboBox cbGroupsDirection;
         private System.Windows.Forms.CheckBox cbDisciplines;
     }

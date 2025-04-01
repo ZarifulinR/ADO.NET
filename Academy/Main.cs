@@ -21,12 +21,14 @@ namespace Academy
             );
 
         Dictionary<string, int> d_directions;
+        Dictionary<string, int> d_groups;
         DataGridView[] tables;
+        
         Query[] queries = new Query[]
         {
             new Query("last_name,first_name,middle_name,birth_date,group_name,direction_name",
-                "Students,Groups,Directions",
-                "[group]=group_id AND direction=direction_id"),
+                "Students JOIN Groups ON([group]=group_id) JOIN Directions ON (direction =direction_id)"),
+                //"[group]=group_id AND direction=direction_id"),
             new Query
             ("group_name, dbo.GetLearningDaysFor(group_name) AS weekdays,start_time,direction_name",
                     "Groups, Directions",
@@ -75,18 +77,35 @@ namespace Academy
             //    cbGroupsDirection.Items.Add(direction);
             //    Console.WriteLine(direction);
             //}
+             dgvStudents.DataSource = connector.Select(queries[0].Colums, queries[0].Tables, queries[0].Condition);
+           
             d_directions = connector.GetDictionary("*", "Directions");
-            cbGroupsDirection.Items.AddRange(d_directions.Select(k => k.Key).ToArray());
-
+            d_groups = connector.GetDictionary("group_id,group_name", "Groups");
+            //int i = tabControl.SelectedIndex;
+            //Query query = queries[i];
+            //toolStripStatusLabel1.Text = status_messages[i] + CountRecordsInDGV(tables[i]);
+            cbStudentsGroup.Items.AddRange(d_groups.Select(g => g.Key).ToArray());
+            cbGroupsDirection.Items.AddRange(d_directions.Select(d => d.Key).ToArray());
+            cbStudentsDirection.Items.AddRange(d_directions.Select(d => d.Key).ToArray());
+            cbStudentsGroup.Items.Insert(0, "Все группы");
+            cbStudentsDirection.Items.Insert(0, "Все направления");
+            cbStudentsDirection.SelectedIndex = cbStudentsGroup.SelectedIndex = 0;
+            loadPage(0);
+        }
+        void loadPage(int i, Query query = null)
+        {
+            if (query == null)query = queries[i] ;
+            //Query query = queries[i];
+            tables[i].DataSource = 
+             connector.Select(query.Colums, query.Tables, query.Condition, query.Group_by);
+            toolStripStatusLabel1.Text = status_messages[i] + CountRecordsInDGV(tables[i]);
         }
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int i = tabControl.SelectedIndex;
-            Query query = queries[i];
-            tables[i].DataSource = 
-                connector.Select(query.Colums, query.Tables, query.Condition, query.Group_by);
-            toolStripStatusLabel1.Text = status_messages[i] + CountRecordsInDGV(tables[i]);
+            //nt i = tabControl.SelectedIndex;
+            loadPage(tabControl.SelectedIndex);
             Console.WriteLine(tabControl.SelectedIndex);
+
             //switch (tabControl.SelectedIndex)
             //{
             //    case 0:
@@ -157,6 +176,28 @@ namespace Academy
 
             toolStripStatusLabel1.Text = $"Количество направлений: {CountRecordsInDGV(dgvDirections)}";
         }
+
+        private void cbStudentsDirection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = cbStudentsDirection.SelectedIndex;
+            Dictionary<string, int> d_groups = connector.GetDictionary
+                ("group_id,group_name", "Groups",
+                i== 0 ? "" : $"direction ={d_directions[cbStudentsDirection.SelectedItem.ToString()]}");
+            cbStudentsGroup.Items.Clear();
+            cbStudentsGroup.Items.AddRange(d_groups.Select(g => g.Key).ToArray());
+            //int t = tabControl.SelectedIndex;
+            //dgvStudents.DataSource = connector.Select
+            //    (
+            //    queries[t].Colums,
+            //    queries[t].Tables,
+            //   i== 0 ?"": $"d_directions = {d_directions[cbGroupsDirection.SelectedItem.ToString()]}");
+            Query query = new Query(queries[0]);
+            query.Condition =
+                (i == 0 || cbStudentsDirection.SelectedItem ==null ? "": $"d_directions = {d_directions[cbGroupsDirection.SelectedItem.ToString()]}");
+            loadPage(0, query);
+        }
+
+       
     }
 }
 
