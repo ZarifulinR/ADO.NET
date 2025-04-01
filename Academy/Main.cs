@@ -19,6 +19,8 @@ namespace Academy
             (
                 ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString
             );
+       
+              Dictionary<string, int> d_directions;
         public Main()
         {
             InitializeComponent();
@@ -26,15 +28,18 @@ namespace Academy
             dgvStudents.DataSource = connector.Select("*", "Students");
             int rowcountStudent = dgvStudents.RowCount - 1;
             toolStripStatusLabel1.Text = "Count Students " + rowcountStudent.ToString();
-            List<string> directions = connector.Directions();
-            cbGroups.Items.Clear();
-            cbGroups.Items.Add("All");
-            foreach (string direction in directions)
-            {
-                cbGroups.SelectedIndex = 0;
-                cbGroups.Items.Add(direction);
-                Console.WriteLine(direction);
-            }
+            //List<string> directions = connector.Directions();
+            //cbGroupsDirection.Items.Clear();
+            //cbGroupsDirection.Items.Add("All");
+            //foreach (string direction in directions)
+            //{
+            //    cbGroupsDirection.SelectedIndex = 0;
+            //    cbGroupsDirection.Items.Add(direction);
+            //    Console.WriteLine(direction);
+            //}
+            d_directions = connector.GetDictionary("*", "Directions");
+            cbGroupsDirection.Items.AddRange(d_directions.Select(k=>k.Key).ToArray());
+
         }
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -44,13 +49,14 @@ namespace Academy
             {
                 case 0:
                     dgvStudents.DataSource = connector.Select("*", "Students");
-                    int rowcountStudent = dgvStudents.RowCount - 1;
-                    toolStripStatusLabel1.Text = "Count Students " + rowcountStudent.ToString();
+                    
+                    toolStripStatusLabel1.Text = $"Count Students :{CountRecordsInDGV(dgvStudents)}" ;
                     break;
                 case 1:
                     dataGridViewGroups.DataSource = connector.Select("*", "Groups");
-                    int rowcountGroups = dataGridViewGroups.RowCount - 1;
-                    toolStripStatusLabel1.Text = "Count Groups " + rowcountGroups.ToString();
+                    
+                    
+                    toolStripStatusLabel1.Text = $"Count Groups :{CountRecordsInDGV(dataGridViewGroups)}";
                     break;
                 case 2:
                     //dgvDirections.DataSource = connector.Select(
@@ -65,31 +71,39 @@ namespace Academy
                         "",
                         "direction_name"
                         );
-                    int rowCount = dgvDirections.RowCount - 1;
-                    toolStripStatusLabel1.Text = "Count Directions " + rowCount.ToString();
+                    //int rowCount = dgvDirections.Rows.Count-1;
+                    toolStripStatusLabel1.Text = $"Count Directions :{CountRecordsInDGV(dgvDirections)}";
                     break;
                 case 3:
                     dgvDiscepline.DataSource = connector.Select("*", "Disciplines");
-                    int rowDisciplines = dgvDiscepline.RowCount - 1;
-                    toolStripStatusLabel1.Text = "Count Disciplines " + rowDisciplines.ToString();
+                    //int rowDisciplines = dgvDiscepline.Rows.Count-1;
+                    toolStripStatusLabel1.Text = $"Count Disciplines :{CountRecordsInDGV(dgvDiscepline)}" ;
                     break;
                 case 4:
                     dgvTeachers.DataSource = connector.Select("*", "Teachers");
-                    int countTeachers = dgvTeachers.RowCount - 1;
-                    toolStripStatusLabel1.Text = "Count Teachers " + countTeachers.ToString();
+                    //int countTeachers = dgvTeachers.Rows.Count-1 ;
+                    toolStripStatusLabel1.Text = $"Count Teachers : {CountRecordsInDGV(dgvTeachers)}";
                     break;
 
             }
         }
 
-        private void cbGroups_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbGroupsDirection_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            string selectedDiscepline = cbGroups.SelectedItem.ToString();
-            Console.WriteLine(selectedDiscepline);
-            //dataGridViewGroups.DataSource = connector.Select("direction_name , group_name", "Groups ОЩШТ Directions", "[group] = group_id AND  direction = direction_id");
+            dataGridViewGroups.DataSource = connector.Select
+                (
+                    "group_name, dbo.GetLearningDaysFor(group_name) AS weekdays,start_time,direction_name",
+                    "Groups, Directions",
+                    $"direction=direction_id AND direction = N'{d_directions[cbGroupsDirection.SelectedItem.ToString()]}'"
+                );
+            
+            //int rowcountGroups = dataGridViewGroups.Rows.Count-1;
+            toolStripStatusLabel1.Text = $"Count Groups :{CountRecordsInDGV(dataGridViewGroups)}";
         }
-
+        int CountRecordsInDGV(DataGridView dgv)
+        {
+            return dgv.RowCount == 0 ? 0 : dgv.RowCount - 1;
+        }
     }
 }
 

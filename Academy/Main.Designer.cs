@@ -37,7 +37,7 @@ namespace Academy
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.dgvStudents = new System.Windows.Forms.DataGridView();
             this.tabPageGroups = new System.Windows.Forms.TabPage();
-            this.cbGroups = new System.Windows.Forms.ComboBox();
+            this.cbGroupsDirection = new System.Windows.Forms.ComboBox();
             this.dataGridViewGroups = new System.Windows.Forms.DataGridView();
             this.tabPageDirections = new System.Windows.Forms.TabPage();
             this.dgvDirections = new System.Windows.Forms.DataGridView();
@@ -137,7 +137,7 @@ namespace Academy
             // 
             // tabPageGroups
             // 
-            this.tabPageGroups.Controls.Add(this.cbGroups);
+            this.tabPageGroups.Controls.Add(this.cbGroupsDirection);
             this.tabPageGroups.Controls.Add(this.dataGridViewGroups);
             this.tabPageGroups.Location = new System.Drawing.Point(4, 25);
             this.tabPageGroups.Name = "tabPageGroups";
@@ -147,14 +147,14 @@ namespace Academy
             this.tabPageGroups.Text = "Groups";
             this.tabPageGroups.UseVisualStyleBackColor = true;
             // 
-            // cbGroups
+            // cbGroupsDirection
             // 
-            this.cbGroups.FormattingEnabled = true;
-            this.cbGroups.Location = new System.Drawing.Point(0, 2);
-            this.cbGroups.Name = "cbGroups";
-            this.cbGroups.Size = new System.Drawing.Size(371, 24);
-            this.cbGroups.TabIndex = 1;
-            this.cbGroups.SelectedIndexChanged += new System.EventHandler(this.cbGroups_SelectedIndexChanged);
+            this.cbGroupsDirection.FormattingEnabled = true;
+            this.cbGroupsDirection.Location = new System.Drawing.Point(0, 2);
+            this.cbGroupsDirection.Name = "cbGroupsDirection";
+            this.cbGroupsDirection.Size = new System.Drawing.Size(371, 24);
+            this.cbGroupsDirection.TabIndex = 1;
+            this.cbGroupsDirection.SelectedIndexChanged += new System.EventHandler(this.cbGroupsDirection_SelectedIndexChanged);
             // 
             // dataGridViewGroups
             // 
@@ -284,7 +284,7 @@ namespace Academy
         private System.Windows.Forms.TabPage tabPageGroups;
         private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox cbGroups;
+        private System.Windows.Forms.ComboBox cbGroupsDirection;
     }
 }
 

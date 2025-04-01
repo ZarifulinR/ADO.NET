@@ -22,7 +22,25 @@ namespace Academy
             AllocConsole();
             Console.WriteLine(CONNECTION_STRING);
         }
-        
+        public Dictionary<string, int> GetDictionary(string colums, string tables)
+        { 
+            Dictionary<string,int>values = new Dictionary<string, int>();
+            string cmd = $" SELECT {colums} FROM {tables}";
+            SqlCommand command = new SqlCommand(cmd, connection);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            if(reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    values[reader[1].ToString()] = Convert.ToInt32(reader[0]);
+
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return values;
+        }
         public DataTable Select(string columns, string tables, string condition = "",string group_by = "")
         {
             // connection.Open();
@@ -62,32 +80,32 @@ namespace Academy
             connection.Close();
             return table;
         }
-        public List<string>Directions()
-        {
-            List<string> directions = new List<string>();
-            string cmd = $"SELECT DISTINCT direction_name FROM Directions";
-            SqlCommand command = new SqlCommand(cmd, connection);
-            try
-            {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    directions.Add(reader["direction_name"].ToString());
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
+        //public List<string>Directions()
+        //{
+        //    List<string> directions = new List<string>();
+        //    string cmd = $"SELECT DISTINCT direction_name FROM Directions";
+        //    SqlCommand command = new SqlCommand(cmd, connection);
+        //    try
+        //    {
+        //        connection.Open();
+        //        SqlDataReader reader = command.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            directions.Add(reader["direction_name"].ToString());
+        //        }
+        //        reader.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                Console.WriteLine("Error loading directions: " + ex.Message);
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return directions;
-        }
+        //        Console.WriteLine("Error loading directions: " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        connection.Close();
+        //    }
+        //    return directions;
+        //}
         
 
         ~Connector()
