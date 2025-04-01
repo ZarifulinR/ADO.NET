@@ -53,7 +53,18 @@ namespace Academy
                     toolStripStatusLabel1.Text = "Count Groups " + rowcountGroups.ToString();
                     break;
                 case 2:
-                    dgvDirections.DataSource = connector.Select("*", "Directions");
+                    //dgvDirections.DataSource = connector.Select(
+                    //    "direction_name AS N'Направление', COUNT(DISTINCT group_id) AS N'Количество групп', COUNT(stud_id) AS N'Количество студентов'",
+                    //    "Students, Groups, Directions",
+                    //    "[group]= group_id AND direction=direction_id",
+                    //    "direction_name"
+                    //    );
+                    dgvDirections.DataSource = connector.Select(
+                        "direction_name AS N'Направление', COUNT(DISTINCT group_id) AS N'Количество групп', COUNT(stud_id) AS N'Количество студентов'",
+                        "Students RIGHT JOIN Groups ON([group]=group_id) RIGHT JOIN Directions ON(direction=direction_id)",
+                        "",
+                        "direction_name"
+                        );
                     int rowCount = dgvDirections.RowCount - 1;
                     toolStripStatusLabel1.Text = "Count Directions " + rowCount.ToString();
                     break;
@@ -76,7 +87,7 @@ namespace Academy
 
             string selectedDiscepline = cbGroups.SelectedItem.ToString();
             Console.WriteLine(selectedDiscepline);
-            dataGridViewGroups.DataSource = connector.Select("direction_name , group_name", "Groups ОЩШТ Directions", "[group] = group_id AND  direction = direction_id");
+            //dataGridViewGroups.DataSource = connector.Select("direction_name , group_name", "Groups ОЩШТ Directions", "[group] = group_id AND  direction = direction_id");
         }
 
     }
