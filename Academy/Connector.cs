@@ -1,123 +1,96 @@
-﻿//#define OLD;
+﻿//#define OLD
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+
+using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.Runtime.InteropServices;
-using System.Data;
 
 namespace Academy
 {
-    class Connector 
-    {
-        readonly string CONNECTION_STRING;// = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
-        readonly SqlConnection connection;
-        public Connector(string connection_string)
-        {
-            CONNECTION_STRING = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
-            connection = new SqlConnection(CONNECTION_STRING);
-            AllocConsole();
-            Console.WriteLine(CONNECTION_STRING);
-        }
-        public Dictionary<string, int> GetDictionary(string colums, string tables, string condition ="")
-        { 
-            Dictionary<string,int>values = new Dictionary<string, int>();
-            string cmd = $" SELECT {colums} FROM {tables}";
-            if (condition != "") cmd += $" WHERE {condition}";
-            SqlCommand command = new SqlCommand(cmd, connection);
-            connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-            if(reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    values[reader[1].ToString()] = Convert.ToInt32(reader[0]);
+	class Connector
+	{
+		readonly string CONNECTION_STRING;// = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
+		SqlConnection connection;
+		public Connector(string connection_string)
+		{
+			//CONNECTION_STRING = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
+			CONNECTION_STRING = connection_string;
+			connection = new SqlConnection(CONNECTION_STRING);
+			AllocConsole();
+			Console.WriteLine(CONNECTION_STRING);
+		}
+		~Connector()
+		{
+			FreeConsole();
+		}
+		public Dictionary<string, int> GetDictionary(string columns, string tables, string condition = "")
+		{
+			Dictionary<string, int> values = new Dictionary<string, int>();
+			string cmd = $"SELECT {columns} FROM {tables}";
+			if (condition != "") cmd += $" WHERE {condition}";
+			SqlCommand command = new SqlCommand(cmd, connection);
+			connection.Open();
+			SqlDataReader reader = command.ExecuteReader();
+			if (reader.HasRows)
+			{
+				while (reader.Read())
+				{
+					values[reader[1].ToString()] = Convert.ToInt32(reader[0]);
+				}
+			}
+			reader.Close();
+			connection.Close();
+			return values;
+		}
+		public DataTable Select(string columns, string tables, string condition = "", string group_by = "")
+		{
+			DataTable table = null;
 
-                }
-            }
-            reader.Close();
-            connection.Close();
-            return values;
-        }
-        public DataTable Select(string columns, string tables, string condition = "",string group_by = "")
-        {
-            // connection.Open();
-            DataTable table = null;
+			string cmd = $"SELECT {columns} FROM {tables}";
+			if (condition != "") cmd += $" WHERE {condition}";
+			if (group_by != "") cmd += $" GROUP BY {group_by}";
+			cmd += ";";
+			SqlCommand command = new SqlCommand(cmd, connection);
+			connection.Open();
+			SqlDataReader reader = command.ExecuteReader();
 
-            string cmd = $"SELECT {columns} FROM {tables}";
-            if (condition != "") cmd += $" WHERE {condition}";
-            if (group_by != "") cmd += $" GROUP BY {group_by}";
-            cmd += ";";
-            SqlCommand command = new SqlCommand(cmd, connection);
-            connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                table = new DataTable();
-                table.Load(reader);
+			if (reader.HasRows)
+			{
+				//1) Создаем таблицу:
+				table = new DataTable();
+				table.Load(reader);
 #if OLD
-                table = new DataTable();
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    table.Columns.Add();
-                }
-                while (reader.Read())
-                {
-                    DataRow row = table.NewRow();
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        row[i] = reader[i];
-                    }
-                    table.Rows.Add(row);
-                } 
+				//2) Добавляем в нее поля:
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					table.Columns.Add();
+				}
+
+				//3) Заполняем таблицу:
+				while (reader.Read())
+				{
+					DataRow row = table.NewRow();
+					for (int i = 0; i < reader.FieldCount; i++)
+					{
+						row[i] = reader[i];
+					}
+					table.Rows.Add(row);
+				}
 #endif
-            }
-            //int rowCount = table.Rows.Count;
-            reader.Close();
-            connection.Close();
-            return table;
-        }
-        //public List<string>Directions()
-        //{
-        //    List<string> directions = new List<string>();
-        //    string cmd = $"SELECT DISTINCT direction_name FROM Directions";
-        //    SqlCommand command = new SqlCommand(cmd, connection);
-        //    try
-        //    {
-        //        connection.Open();
-        //        SqlDataReader reader = command.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            directions.Add(reader["direction_name"].ToString());
-        //        }
-        //        reader.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
+			}
 
-        //        Console.WriteLine("Error loading directions: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        connection.Close();
-        //    }
-        //    return directions;
-        //}
-        
-
-        ~Connector()
-        {
-            FreeConsole();
-        }
-        [DllImport("kernel32.dll")]
-        public static extern bool AllocConsole();
-        [DllImport("kernel32.dll")]
-        public static extern bool FreeConsole();
-    }
-
-    
+			reader.Close();
+			connection.Close();
+			return table;
+		}
+		[DllImport("kernel32.dll")]
+		public static extern bool AllocConsole();
+		[DllImport("kernel32.dll")]
+		public static extern bool FreeConsole();
+	}
 }
