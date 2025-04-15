@@ -16,181 +16,34 @@ namespace AcademyDataSet
 {
     public partial class MainForm : Form
     {
-        readonly string CONNECTION_STRING = "";
-        SqlConnection connection;
-        DataSet GroupsRelatedData;
-        List<string> tables;
-        List<string> commands;
+        Cache GroupsRelatedData;
         public MainForm()
         {
             InitializeComponent();
             AllocConsole();
-            CONNECTION_STRING = ConfigurationManager.ConnectionStrings["PV_319_Import"].ConnectionString;
-            connection = new SqlConnection(CONNECTION_STRING);
-            Console.WriteLine(CONNECTION_STRING);
-            tables = new List<string>();
-            GroupsRelatedData = new DataSet(nameof(GroupsRelatedData));
-            // LoadGroupsRelatedData();
-            Check();
-            cbDirections.DataSource = GroupsRelatedData.Tables["Directions"];
+            GroupsRelatedData = new Cache();
+            GroupsRelatedData.AddTable("Directions", "direction_id,direction_name");
+            GroupsRelatedData.AddTable("Groups", "group_id,group_name,direction");
+            GroupsRelatedData.AddRelation("GroupsDirections", "Groups,direction", "Directions,direction_id");
+            GroupsRelatedData.Load();
+
+            cbDirections.DataSource = GroupsRelatedData.Set.Tables["Directions"];
             cbDirections.ValueMember = "direction_id";
             cbDirections.DisplayMember = "direction_name";
-            cbGroups.DataSource = GroupsRelatedData.Tables["Groups"];
+            cbGroups.DataSource = GroupsRelatedData.Set.Tables["Groups"];
             cbGroups.DisplayMember = "group_name";
             cbGroups.ValueMember = "group_id";
         }
-        public void AddTable(string table, string columns)
+        private void cbDirections_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string[] separated_colums = columns.Split(',');
-            GroupsRelatedData.Tables.Add(table);
-            for (int i = 0; i < separated_colums.Length; i++)
-            {
-                GroupsRelatedData.Tables[table].Columns.Add(separated_colums[i]);
-            }
-            GroupsRelatedData.Tables[table].PrimaryKey =
-            new DataColumn[] { GroupsRelatedData.Tables[table].Columns[separated_colums[0]] };
-            tables.Add($"{table}, {columns}");
-        }
-        public void AddRelation(string name, string child, string parent)
-        {
-            GroupsRelatedData.Relations.Add
-                (
-                    name,
-                    GroupsRelatedData.Tables[parent.Split(',')[0]].Columns[parent.Split(',')[1]],
-                    GroupsRelatedData.Tables[child.Split(',')[0]].Columns[child.Split(',')[1]]
-
-                );
-        }
-        public new void Load()
-        {
-            string[] tables = this.tables.ToArray();
-            for (int i = 0; i < tables.Length; i++)
-            {
-                string columns = "";
-                DataColumnCollection column_collection = GroupsRelatedData.Tables[tables[i].Split(',')[0]].Columns;
-                foreach (DataColumn column in column_collection)
-                {
-                    columns += $"[{column.ColumnName}],";
-                }
-                    columns = columns.Remove(columns.LastIndexOf(','));
-                Console.WriteLine(columns);
-                string cmd = $"SELECT * FROM {tables[i].Split(',')[0]}";
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd, connection);
-                adapter.Fill(GroupsRelatedData.Tables[tables[i].Split(',')[0]]);
-            }
-        }
-        void LoadGroupsRelatedData()
-        {
-            Console.WriteLine(nameof(GroupsRelatedData));
-            //1) Создаем "DataSet"
-
-            //2) Добавляем таблицы в DataSet
-
-            const string dsTable_Directions = "Directions";
-            const string dst_col__directions_id = "direction_id";
-            const string dst_col__directions_name = "direction_name";
-            GroupsRelatedData.Tables.Add(dsTable_Directions);
-            GroupsRelatedData.Tables[dsTable_Directions].Columns.Add(dst_col__directions_id, typeof(byte));
-            GroupsRelatedData.Tables[dsTable_Directions].Columns.Add(dst_col__directions_name, typeof(string));
-            GroupsRelatedData.Tables[dsTable_Directions].PrimaryKey =
-                new DataColumn[] { GroupsRelatedData.Tables[dsTable_Directions].Columns[dsTable_Directions] };
-            const string dsTable_Groups = "Groups";
-            const string dst_Groups_col_group_id = "group_id";
-            const string dst_Gtoups_col_group_name = "group_name";
-            const string dst_Groups_col_direction = "direction";
-            GroupsRelatedData.Tables.Add(dsTable_Groups);
-            GroupsRelatedData.Tables[dsTable_Groups].Columns.Add(dst_Groups_col_group_id, typeof(int));
-            GroupsRelatedData.Tables[dsTable_Groups].Columns.Add(dst_Gtoups_col_group_name, typeof(string));
-            GroupsRelatedData.Tables[dsTable_Groups].Columns.Add(dst_Groups_col_direction, typeof(byte));
-            GroupsRelatedData.Tables[dsTable_Groups].PrimaryKey =
-                new DataColumn[] { GroupsRelatedData.Tables[dsTable_Groups].Columns[dst_Groups_col_group_id] };
-
-            string dsRelation_groupsDirections = "GroupsDirections";
-            GroupsRelatedData.Relations.Add
-                (
-                   dsRelation_groupsDirections,
-                    GroupsRelatedData.Tables["Directions"].Columns["direction_id"],
-                    GroupsRelatedData.Tables["Groups"].Columns["direction"]
-                );
-            string directions_cmd = "SELECT * FROM Directions";
-            string groups_cmd = "SELECT * FROM Groups";
-            SqlDataAdapter directionsAdapter = new SqlDataAdapter(directions_cmd, connection);
-            SqlDataAdapter groupsAdapter = new SqlDataAdapter(groups_cmd, connection);
-            connection.Open();
-            directionsAdapter.Fill(GroupsRelatedData.Tables[dsTable_Directions]);
-            groupsAdapter.Fill(GroupsRelatedData.Tables[dsTable_Groups]);
-            connection.Close();
-            foreach (DataRow row in GroupsRelatedData.Tables[dsTable_Directions].Rows)
-                Console.WriteLine($"{row[dst_col__directions_id]}\t{row[dst_col__directions_name]}");
-            Console.WriteLine("=============================================");
-            foreach (DataRow row in GroupsRelatedData.Tables[dsTable_Groups].Rows)
-                Console.WriteLine($"{row[dst_Groups_col_group_id]}\t" +
-                    $"{row[dst_Gtoups_col_group_name]}\t{row.GetParentRow(dsRelation_groupsDirections)[dst_col__directions_name]}");
-        }
-        void Print(string table)
-
-        {
-            Console.WriteLine("\n---------------------------------\n");
-            Console.WriteLine(table);
-            string relation_name = "No relation";
-            string parent_table_name = "";
-            string parent_colunm_name = "";
-            int parent_index = -1;
-            if (hasParent(table))
-            {
-                relation_name = GroupsRelatedData.Tables[table].ParentRelations[0].RelationName;
-                parent_table_name = GroupsRelatedData.Tables[table].ParentRelations[0].ParentTable.TableName;
-                parent_colunm_name = parent_table_name.ToLower().Substring(0, parent_table_name.Length - 1) + "_name";
-                Console.WriteLine(parent_table_name);
-                //DataColumn paret_column = GroupsRelatedData.Tables[parent_table_name].Columns["direction_name"];
-                parent_index =
-                    GroupsRelatedData.Tables[table].Columns.
-                    IndexOf(parent_table_name.ToLower().Substring(0, parent_table_name.Length - 1));
-                Console.WriteLine(parent_index);
-            }
-            foreach (DataRow row in GroupsRelatedData.Tables[table].Rows)
-            {
-                for (int i = 0; i < row.ItemArray.Length; i++)
-                {
-
-                    if (i == parent_index)
-                        Console.Write(row.GetParentRow(relation_name)[parent_colunm_name]);
-                    else
-                        Console.Write(row[i].ToString() + "\t");
-
-                }
-
-                Console.WriteLine();
-            }
-            Console.WriteLine("\n---------------------------------\n");
-        }
-
-        bool hasParent(string table)
-        {
-            return GroupsRelatedData.Tables[table].ParentRelations.Count > 0;
-        }
-        void Check()
-        {
-            AddTable("Directions", "direction_id,direction_name ");
-            AddTable("Groups", "group_id,group_name,direction");
-            AddTable("Students", "stud_id,last_name,first_name,middle_name,birth_date,group");
-            AddRelation("GroupsDirections", "Groups,direction", "Directions,direction_id");
-            AddRelation("StudentsGroups", "Students,group", "Groups,group_id");
-            Load();
-            Print("Directions");
-            Print("Groups");
-            Print("Students");
+            Console.WriteLine(GroupsRelatedData.Set.Tables["Directions"].ChildRelations);
+           // DataRow row = GroupsRelatedData.Tables["Directions"].Rows.Find(cbDirections.SelectedValue);
+            GroupsRelatedData.Set.Tables["Groups"].DefaultView.RowFilter = $"direction={cbDirections.SelectedValue}";
         }
         [DllImport("kernel32.dll")]
         public static extern bool AllocConsole();
         [DllImport("kernel32.dll")]
         public static extern bool FreeConsole();
 
-        private void cbDirections_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Console.WriteLine(GroupsRelatedData.Tables["Directions"].ChildRelations);
-           // DataRow row = GroupsRelatedData.Tables["Directions"].Rows.Find(cbDirections.SelectedValue);
-            GroupsRelatedData.Tables["Groups"].DefaultView.RowFilter = $"direction={cbDirections.SelectedValue}";
-        }
     }
 }
