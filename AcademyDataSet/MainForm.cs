@@ -20,6 +20,7 @@ namespace AcademyDataSet
         SqlConnection connection;
         DataSet GroupsRelatedData;
         List<string> tables;
+        List<string> commands;
         public MainForm()
         {
             InitializeComponent();
@@ -31,6 +32,12 @@ namespace AcademyDataSet
             GroupsRelatedData = new DataSet(nameof(GroupsRelatedData));
             // LoadGroupsRelatedData();
             Check();
+            cbDirections.DataSource = GroupsRelatedData.Tables["Directions"];
+            cbDirections.ValueMember = "direction_id";
+            cbDirections.DisplayMember = "direction_name";
+            cbGroups.DataSource = GroupsRelatedData.Tables["Groups"];
+            cbGroups.DisplayMember = "group_name";
+            cbGroups.ValueMember = "group_id";
         }
         public void AddTable(string table, string columns)
         {
@@ -39,10 +46,10 @@ namespace AcademyDataSet
             for (int i = 0; i < separated_colums.Length; i++)
             {
                 GroupsRelatedData.Tables[table].Columns.Add(separated_colums[i]);
-                GroupsRelatedData.Tables[table].PrimaryKey =
-                new DataColumn[] { GroupsRelatedData.Tables[table].Columns[separated_colums[0]] };
-                tables.Add($"{table},{columns}");
             }
+            GroupsRelatedData.Tables[table].PrimaryKey =
+            new DataColumn[] { GroupsRelatedData.Tables[table].Columns[separated_colums[0]] };
+            tables.Add($"{table}, {columns}");
         }
         public void AddRelation(string name, string child, string parent)
         {
@@ -59,6 +66,14 @@ namespace AcademyDataSet
             string[] tables = this.tables.ToArray();
             for (int i = 0; i < tables.Length; i++)
             {
+                string columns = "";
+                DataColumnCollection column_collection = GroupsRelatedData.Tables[tables[i].Split(',')[0]].Columns;
+                foreach (DataColumn column in column_collection)
+                {
+                    columns += $"[{column.ColumnName}],";
+                }
+                    columns = columns.Remove(columns.LastIndexOf(','));
+                Console.WriteLine(columns);
                 string cmd = $"SELECT * FROM {tables[i].Split(',')[0]}";
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd, connection);
                 adapter.Fill(GroupsRelatedData.Tables[tables[i].Split(',')[0]]);
@@ -130,7 +145,7 @@ namespace AcademyDataSet
                 //DataColumn paret_column = GroupsRelatedData.Tables[parent_table_name].Columns["direction_name"];
                 parent_index =
                     GroupsRelatedData.Tables[table].Columns.
-                    IndexOf(parent_table_name.ToLower().Substring(0,parent_table_name.Length - 1));
+                    IndexOf(parent_table_name.ToLower().Substring(0, parent_table_name.Length - 1));
                 Console.WriteLine(parent_index);
             }
             foreach (DataRow row in GroupsRelatedData.Tables[table].Rows)
@@ -142,7 +157,7 @@ namespace AcademyDataSet
                         Console.Write(row.GetParentRow(relation_name)[parent_colunm_name]);
                     else
                         Console.Write(row[i].ToString() + "\t");
-                                                        
+
                 }
 
                 Console.WriteLine();
@@ -156,7 +171,7 @@ namespace AcademyDataSet
         }
         void Check()
         {
-            AddTable("Directions", "direction_id,direction_name");
+            AddTable("Directions", "direction_id,direction_name ");
             AddTable("Groups", "group_id,group_name,direction");
             AddTable("Students", "stud_id,last_name,first_name,middle_name,birth_date,group");
             AddRelation("GroupsDirections", "Groups,direction", "Directions,direction_id");
@@ -170,5 +185,12 @@ namespace AcademyDataSet
         public static extern bool AllocConsole();
         [DllImport("kernel32.dll")]
         public static extern bool FreeConsole();
+
+        private void cbDirections_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine(GroupsRelatedData.Tables["Directions"].ChildRelations);
+           // DataRow row = GroupsRelatedData.Tables["Directions"].Rows.Find(cbDirections.SelectedValue);
+            GroupsRelatedData.Tables["Groups"].DefaultView.RowFilter = $"direction={cbDirections.SelectedValue}";
+        }
     }
 }

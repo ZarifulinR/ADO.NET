@@ -29,13 +29,36 @@ namespace AcademyDataSet
         /// </summary>
         private void InitializeComponent()
         {
+            this.cbGroups = new System.Windows.Forms.ComboBox();
+            this.cbDirections = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
+            // 
+            // cbGroups
+            // 
+            this.cbGroups.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbGroups.FormattingEnabled = true;
+            this.cbGroups.Location = new System.Drawing.Point(12, 26);
+            this.cbGroups.Name = "cbGroups";
+            this.cbGroups.Size = new System.Drawing.Size(349, 24);
+            this.cbGroups.TabIndex = 0;
+            // 
+            // cbDirections
+            // 
+            this.cbDirections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbDirections.FormattingEnabled = true;
+            this.cbDirections.Location = new System.Drawing.Point(385, 26);
+            this.cbDirections.Name = "cbDirections";
+            this.cbDirections.Size = new System.Drawing.Size(376, 24);
+            this.cbDirections.TabIndex = 1;
+            this.cbDirections.SelectedIndexChanged += new System.EventHandler(this.cbDirections_SelectedIndexChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.cbDirections);
+            this.Controls.Add(this.cbGroups);
             this.Name = "MainForm";
             this.Text = "AcademyDataSet";
             this.ResumeLayout(false);
@@ -43,6 +66,9 @@ namespace AcademyDataSet
         }
 
         #endregion
+
+        private System.Windows.Forms.ComboBox cbGroups;
+        private System.Windows.Forms.ComboBox cbDirections;
     }
 }
 
