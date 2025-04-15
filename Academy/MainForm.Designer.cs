@@ -1,7 +1,7 @@
 ﻿
 namespace Academy
 {
-    partial class Main
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -114,7 +114,7 @@ namespace Academy
             this.cbStudentsDirection.Name = "cbStudentsDirection";
             this.cbStudentsDirection.Size = new System.Drawing.Size(167, 24);
             this.cbStudentsDirection.TabIndex = 2;
-            this.cbStudentsDirection.SelectedIndexChanged += new System.EventHandler(this.cbStudentsDirection_SelectedIndexChanged);
+            this.cbStudentsDirection.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             // 
             // cbStudentsGroup
             // 
@@ -123,6 +123,7 @@ namespace Academy
             this.cbStudentsGroup.Name = "cbStudentsGroup";
             this.cbStudentsGroup.Size = new System.Drawing.Size(150, 24);
             this.cbStudentsGroup.TabIndex = 1;
+            this.cbStudentsGroup.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             // 
             // dgvStudents
             // 
@@ -156,7 +157,7 @@ namespace Academy
             this.cbGroupsDirection.Name = "cbGroupsDirection";
             this.cbGroupsDirection.Size = new System.Drawing.Size(371, 24);
             this.cbGroupsDirection.TabIndex = 1;
-            this.cbGroupsDirection.SelectedIndexChanged += new System.EventHandler(this.cbGroupsDirection_SelectedIndexChanged);
+            this.cbGroupsDirection.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             // 
             // dataGridViewGroups
             // 
@@ -254,7 +255,7 @@ namespace Academy
             this.dgvTeachers.Size = new System.Drawing.Size(789, 369);
             this.dgvTeachers.TabIndex = 0;
             // 
-            // Main
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -262,7 +263,7 @@ namespace Academy
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.statusStrip);
             this.MinimumSize = new System.Drawing.Size(640, 480);
-            this.Name = "Main";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Academy";
             this.statusStrip.ResumeLayout(false);

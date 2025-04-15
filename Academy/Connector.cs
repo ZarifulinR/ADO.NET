@@ -53,6 +53,7 @@ namespace Academy
 
 			string cmd = $"SELECT {columns} FROM {tables}";
 			if (condition != "") cmd += $" WHERE {condition}";
+			//else if(condition != "") cmd += $" AND {condition}";
 			if (group_by != "") cmd += $" GROUP BY {group_by}";
 			cmd += ";";
 			SqlCommand command = new SqlCommand(cmd, connection);
