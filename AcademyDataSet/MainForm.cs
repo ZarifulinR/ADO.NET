@@ -113,26 +113,58 @@ namespace AcademyDataSet
                     $"{row[dst_Gtoups_col_group_name]}\t{row.GetParentRow(dsRelation_groupsDirections)[dst_col__directions_name]}");
         }
         void Print(string table)
+
         {
             Console.WriteLine("\n---------------------------------\n");
-            foreach(DataRow row in GroupsRelatedData.Tables[table].Rows )
+            Console.WriteLine(table);
+            string relation_name = "No relation";
+            string parent_table_name = "";
+            string parent_colunm_name = "";
+            int parent_index = -1;
+            if (hasParent(table))
             {
-                for(int i = 0; i<row.ItemArray.Length;i++)
+                relation_name = GroupsRelatedData.Tables[table].ParentRelations[0].RelationName;
+                parent_table_name = GroupsRelatedData.Tables[table].ParentRelations[0].ParentTable.TableName;
+                parent_colunm_name = parent_table_name.ToLower().Substring(0, parent_table_name.Length - 1) + "_name";
+                Console.WriteLine(parent_table_name);
+                //DataColumn paret_column = GroupsRelatedData.Tables[parent_table_name].Columns["direction_name"];
+                parent_index =
+                    GroupsRelatedData.Tables[table].Columns.
+                    IndexOf(parent_table_name.ToLower().Substring(0,parent_table_name.Length - 1));
+                Console.WriteLine(parent_index);
+            }
+            foreach (DataRow row in GroupsRelatedData.Tables[table].Rows)
+            {
+                for (int i = 0; i < row.ItemArray.Length; i++)
                 {
-                    Console.Write(row[i].ToString()+"\t"); ;
+
+                    if (i == parent_index)
+                        Console.Write(row.GetParentRow(relation_name)[parent_colunm_name]);
+                    else
+                        Console.Write(row[i].ToString() + "\t");
+                                                        
                 }
+
                 Console.WriteLine();
             }
             Console.WriteLine("\n---------------------------------\n");
+        }
+
+        bool hasParent(string table)
+        {
+            return GroupsRelatedData.Tables[table].ParentRelations.Count > 0;
         }
         void Check()
         {
             AddTable("Directions", "direction_id,direction_name");
             AddTable("Groups", "group_id,group_name,direction");
+            AddTable("Students", "stud_id,last_name,first_name,middle_name,birth_date,group");
             AddRelation("GroupsDirections", "Groups,direction", "Directions,direction_id");
+            AddRelation("StudentsGroups", "Students,group", "Groups,group_id");
             Load();
             Print("Directions");
             Print("Groups");
+            Print("Students");
         }
         [DllImport("kernel32.dll")]
         public static extern bool AllocConsole();
